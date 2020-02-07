@@ -32,7 +32,7 @@
 	          <div class="carousel-caption text-left">
 	            <h1>Improve Your Vision</h1>
 	            <p>Sometimes all you need is a new perspective. Get yourself new glasses</p>
-	            <p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>
+	            <p><a class="btn btn-lg btn-primary" href="register.php" role="button">Sign up today</a></p>
 	          </div>
 	        </div>
 	      </div>
@@ -43,7 +43,7 @@
 	          <div class="carousel-caption">
 	            <h1>Make it worthwhile</h1>
 	            <p>See the whole world with our newly improved designer frames.</p>
-	            <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>
+	            <p><a class="btn btn-lg btn-primary" href="store.php" role="button">Learn more</a></p>
 	          </div>
 	        </div>
 	      </div>

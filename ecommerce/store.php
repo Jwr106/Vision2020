@@ -1,120 +1,154 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Custom styles for this template -->
-    <link rel="stylesheet" href="css/carousel.css">
-    <link rel="stylesheet" href="css/style.css">
-    <!-- Bootstrap CSS -->
+<?php
+session_start();
+require_once("dbcontroller.php");
+$db_handle = new DBController();
+if(!empty($_GET["action"])) {
+switch($_GET["action"]) {
+	case "add":
+		if(!empty($_POST["quantity"])) {
+			$productByCode = $db_handle->runQuery("SELECT * FROM tblproduct WHERE code='" . $_GET["code"] . "'");
+			$itemArray = array($productByCode[0]["code"]=>array('name'=>$productByCode[0]["name"], 'code'=>$productByCode[0]["code"], 'quantity'=>$_POST["quantity"], 'price'=>$productByCode[0]["price"], 'image'=>$productByCode[0]["image"]));
+			
+			if(!empty($_SESSION["cart_item"])) {
+				if(in_array($productByCode[0]["code"],array_keys($_SESSION["cart_item"]))) {
+					foreach($_SESSION["cart_item"] as $k => $v) {
+							if($productByCode[0]["code"] == $k) {
+								if(empty($_SESSION["cart_item"][$k]["quantity"])) {
+									$_SESSION["cart_item"][$k]["quantity"] = 0;
+								}
+								$_SESSION["cart_item"][$k]["quantity"] += $_POST["quantity"];
+							}
+					}
+				} else {
+					$_SESSION["cart_item"] = array_merge($_SESSION["cart_item"],$itemArray);
+				}
+			} else {
+				$_SESSION["cart_item"] = $itemArray;
+			}
+		}
+	break;
+	case "remove":
+		if(!empty($_SESSION["cart_item"])) {
+			foreach($_SESSION["cart_item"] as $k => $v) {
+					if($_GET["code"] == $k)
+						unset($_SESSION["cart_item"][$k]);				
+					if(empty($_SESSION["cart_item"]))
+						unset($_SESSION["cart_item"]);
+			}
+		}
+	break;
+	case "empty":
+		unset($_SESSION["cart_item"]);
+	break;	
+}
+}
+?>
+<HTML>
+<HEAD>
+<TITLE>Store</TITLE>
+<link href="css/style.css" type="text/css" rel="stylesheet" />
+<!-- Bootstrap CSS -->
     <link rel="stylesheet" href="bootstrap/css/bootstrap.css" crossorigin="anonymous" >
 
-    <title>Link Opticians</title>
-  </head>
-  <body>
 
-	<?php include 'menu.php';?>
+</HEAD>
+<BODY>
+<?php include 'menu.php';?>
+<div id="shopping-cart">
+<div class="txt-heading">Shopping Cart</div>
 
-	<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-      <h1 class="display-4">Store</h1>
-      <p class="lead">Get the perfect product to improve and protect your vision.</p>
-    </div>
+<a id="btnEmpty" href="store.php?action=empty">Empty Cart</a>
+<?php
+if(isset($_SESSION["cart_item"])){
+    $total_quantity = 0;
+    $total_price = 0;
+?>	
+<table class="tbl-cart" cellpadding="10" cellspacing="1">
+<tbody>
+<tr>
+<th style="text-align:left;">Name</th>
+<th style="text-align:left;">Code</th>
+<th style="text-align:right;" width="5%">Quantity</th>
+<th style="text-align:right;" width="10%">Unit Price</th>
+<th style="text-align:right;" width="10%">Price</th>
+<th style="text-align:center;" width="5%">Remove</th>
+</tr>	
+<?php		
+    foreach ($_SESSION["cart_item"] as $item){
+        $item_price = $item["quantity"]*$item["price"];
+		?>
+				<tr>
+				<td><img src="<?php echo $item["image"]; ?>" class="cart-item-image" /><?php echo $item["name"]; ?></td>
+				<td><?php echo $item["code"]; ?></td>
+				<td style="text-align:right;"><?php echo $item["quantity"]; ?></td>
+				<td  style="text-align:right;"><?php echo "$ ".$item["price"]; ?></td>
+				<td  style="text-align:right;"><?php echo "$ ". number_format($item_price,2); ?></td>
+				<td style="text-align:center;"><a href="store.php?action=remove&code=<?php echo $item["code"]; ?>" class="btnRemoveAction"><img src="icon-delete.png" alt="Remove Item" /></a></td>
+				</tr>
+				<?php
+				$total_quantity += $item["quantity"];
+				$total_price += ($item["price"]*$item["quantity"]);
+		}
+		?>
 
-    <div class="container">
-      <div class="card-deck mb-3 text-center">
-        <div class="card mb-4 box-shadow">
-          <div class="card-header">
-            <h4 class="my-0 font-weight-normal">Spec 1</h4>
-          </div>
-          <div class="card-body">
-            <img src="images/shopping/SDO-BARNABY-COL104-256.jpg" class="img-fluid" />
-            <h4 class="my-0 font-weight-bold"><i>$ 235.00</i></h4><br/>
-            <button type="button" class="btn btn-lg btn-block btn-primary">Add to Cart</button>
-          </div>
-        </div>
-        <div class="card mb-4 box-shadow">
-          <div class="card-header">
-            <h4 class="my-0 font-weight-normal">Spec 2</h4>
-          </div>
-          <div class="card-body">
-            <img src="images/shopping/SBS015-COL60-256.jpg" class="img-fluid" />
-            <h4 class="my-0 font-weight-bold"><i>$ 225.00</i></h4><br/>
-            <button type="button" class="btn btn-lg btn-block btn-primary">Add to Cart</button>
-          </div>
-        </div>
-        <div class="card mb-4 box-shadow">
-          <div class="card-header">
-            <h4 class="my-0 font-weight-normal">Spec 3</h4>
-          </div>
-          <div class="card-body">
-            <img src="images/shopping/SBS019-COL10-256.jpg" class="img-fluid" />
-            <h4 class="my-0 font-weight-bold"><i>$ 215.00</i></h4><br/>
-            <button type="button" class="btn btn-lg btn-block btn-primary">Add to Cart</button>
-          </div>
-        </div>
-        <div class="card mb-4 box-shadow">
-          <div class="card-header">
-            <h4 class="my-0 font-weight-normal">Spec 4</h4>
-          </div>
-          <div class="card-body">
-            <img src="images/shopping/SBS023-COL30-256.jpg" class="img-fluid" />
-            <h4 class="my-0 font-weight-bold"><i>$ 275.00</i></h4><br/>
-            <button type="button" class="btn btn-lg btn-block btn-primary">Add to Cart</button>
-          </div>
-        </div>
-      </div>
-      <div class="card-deck mb-3 text-center">
-        <div class="card mb-4 box-shadow">
-          <div class="card-header">
-            <h4 class="my-0 font-weight-normal">Spec 5</h4>
-          </div>
-          <div class="card-body">
-            <img src="images/shopping/SB259-COL30-256.jpg" class="img-fluid" />
-            <h4 class="my-0 font-weight-bold"><i>$ 205.00</i></h4><br/>
-            <button type="button" class="btn btn-lg btn-block btn-primary">Add to Cart</button>
-          </div>
-        </div>
-        <div class="card mb-4 box-shadow">
-          <div class="card-header">
-            <h4 class="my-0 font-weight-normal">Spec 6</h4>
-          </div>
-          <div class="card-body">
-            <img src="images/shopping/SBS015-COL60-256.jpg" class="img-fluid" />
-            <h4 class="my-0 font-weight-bold"><i>$ 295.00</i></h4><br/>
-            <button type="button" class="btn btn-lg btn-block btn-primary">Add to Cart</button>
-          </div>
-        </div>
-        <div class="card mb-4 box-shadow">
-          <div class="card-header">
-            <h4 class="my-0 font-weight-normal">Spec 7</h4>
-          </div>
-          <div class="card-body">
-            <img src="images/shopping/SBS019-COL10-256.jpg" class="img-fluid" />
-            <h4 class="my-0 font-weight-bold"><i>$ 225.00</i></h4><br/>
-            <button type="button" class="btn btn-lg btn-block btn-primary">Add to Cart</button>
-          </div>
-        </div>
-        <div class="card mb-4 box-shadow">
-          <div class="card-header">
-            <h4 class="my-0 font-weight-normal">Spec 8</h4>
-          </div>
-          <div class="card-body">
-            <img src="images/shopping/SBS023-COL30-256.jpg" class="img-fluid" />
-            <h4 class="my-0 font-weight-bold"><i>$ 255.00</i></h4><br/>
-            <button type="button" class="btn btn-lg btn-block btn-primary">Add to Cart</button>
-          </div>
-        </div>
-      </div>
-    </div>
+<tr>
+<td colspan="2" align="right">Total:</td>
+<td align="right"><?php echo $total_quantity; ?></td>
+<td align="right" colspan="2"><strong><?php echo "$ ".number_format($total_price, 2); ?></strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>		
+  <?php
+} else {
+?>
+<div class="no-records">Your Cart is Empty</div>
+<?php 
+}
+?>
+</div>
+	
+<div id="product-grid">
+	<div class="txt-heading">Products</div>
+	<?php
+	$product_array = $db_handle->runQuery("SELECT * FROM tblproduct ORDER BY id ASC");
+	if (!empty($product_array)) { 
+		foreach($product_array as $key=>$value){
+	?>
+ 
+		<div class="product-item">
+			<form method="post" action="store.php?action=add&code=<?php echo $product_array[$key]["code"]; ?>">
+			<div class="product-image"><img src="<?php echo $product_array[$key]["image"]; ?>"></div>
+			<div class="product-tile-footer">
+			<div class="product-title"><?php echo $product_array[$key]["name"]; ?></div>
+			<div class="product-price"><?php echo "$".$product_array[$key]["price"]; ?></div>
+			<div class="cart-action"><input type="text" class="product-quantity" name="quantity" value="1" size="2" /><input type="submit" value="Add to Cart" class="btnAddAction" /></div>
+			</div>
+				
+			</form>
 
-    <?php include 'footer.php';?>
+		</div>
 
-	</main>
+	<?php
+		}
+	}
+	?>
+</div>
+<div class="container">
+        <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-left">
+          <p class="lead">			  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </p>
+        </div>
+        </div>
+      <hr>
+    </div> <!-- /container 
+<?php include 'footer.php';?>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="js/jquery-3.4.1.slim.min.js" crossorigin="anonymous"></script>
     <script src="js/popper.min.js" crossorigin="anonymous"></script>
     <script src="bootstrap/js/bootstrap.min.js" crossorigin="anonymous"></script>
-  </body>
-</html>
+
+</BODY>
+</HTML>
