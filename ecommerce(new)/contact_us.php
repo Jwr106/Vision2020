@@ -23,7 +23,7 @@
         <div class="col-md-5">
           <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-left">
             <h4>Head Office</h4>
-            <p class="lead">Robson Manyika House<br/>
+            <p class="lead">Robinson House<br/>
               Corner Angwa/Union Avenue<br/>
               Harare<br/>
               Zimbabwe</p>
