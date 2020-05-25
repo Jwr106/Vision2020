@@ -28,6 +28,7 @@
           <li><a href="category.php"><i class="fa fa-circle-o"></i> Category</a></li>
         </ul>
       </li>
+      <li><a href="order_record.php"><i class="fa fa-users"></i> <span>Order Records</span></a></li>
     </ul>
   </section>
   <!-- /.sidebar -->
