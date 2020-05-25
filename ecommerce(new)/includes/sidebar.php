@@ -47,11 +47,9 @@
 	    	<h3 class='box-title'><b>Follow us on Social Media</b></h3>
 	  	</div>
 	  	<div class='box-body'>
-	    	<a class="btn btn-social-icon btn-facebook"><i class="fa fa-facebook"></i></a>
-	    	<a class="btn btn-social-icon btn-twitter"><i class="fa fa-twitter"></i></a>
-	    	<a class="btn btn-social-icon btn-instagram"><i class="fa fa-instagram"></i></a>
-	    	<a class="btn btn-social-icon btn-google"><i class="fa fa-google-plus"></i></a>
-	    	<a class="btn btn-social-icon btn-linkedin"><i class="fa fa-linkedin"></i></a>
+	    	<a href="https://www.facebook.com/Link-Opticians-1655124141394304" target="_blank" class="fa fa-facebook" style="font-size:30px"></a>
+	    	<a href="https://twitter.com/LinkOpticians" target="_blank" class="fa fa-twitter" style="font-size:30px"></a>
+	    	<a href="https://www.instagram.com/linkoptical1" target="_blank" class="fa fa-instagram" style="font-size:30px"></a>
 	  	</div>
 	</div>
 </div>
