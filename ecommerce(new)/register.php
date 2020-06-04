@@ -60,7 +60,7 @@
 				        $mail->isSMTP();                                     
 				        $mail->Host = 'smtp.gmail.com';                      
 				        $mail->SMTPAuth = true;                               
-				        $mail->Username = 'testsourcecodester@gmail.com';     
+				        $mail->Username = 'jwrkira@gmail.com';     
 				        $mail->Password = 'mysourcepass';                    
 				        $mail->SMTPOptions = array(
 				            'ssl' => array(
@@ -72,11 +72,11 @@
 				        $mail->SMTPSecure = 'ssl';                           
 				        $mail->Port = 465;                                   
 
-				        $mail->setFrom('testsourcecodester@gmail.com');
+				        $mail->setFrom('jwrkira@gmail.com');
 				        
 				        //Recipients
 				        $mail->addAddress($email);              
-				        $mail->addReplyTo('testsourcecodester@gmail.com');
+				        $mail->addReplyTo('jwrkira@gmail.com');
 				       
 				        //Content
 				        $mail->isHTML(true);                                  
